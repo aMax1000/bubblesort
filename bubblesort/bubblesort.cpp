@@ -96,6 +96,26 @@ void bubblesortopt(vector<T>& arr) {
         //cout << n;
     }
 }
+void nsort(vector<int> arr, int sizeofbucket,int maxvalue,int multofbucket=2) {
+    long long int avr = 0;
+	avr /= arr.size();
+	int amountofbuckets = arr.size() / sizeofbucket + 1;
+	vector<vector<int>> buckets(amountofbuckets);
+	for (int i = 0;i < buckets.size();i++){
+        vector<int> temp(sizeofbucket * multofbucket);
+		buckets[i]=temp;
+	}
+    for(int a:arr){
+        buckets[((a-1) / maxvalue) * amountofbuckets].push_back(a);
+    }
+    
+    for (vector<int> a : buckets) {
+        bubblesortopt(a);
+        
+    }
+    
+}
+
 int main()
 {
     vector<int> arr;
