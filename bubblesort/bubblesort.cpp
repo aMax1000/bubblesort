@@ -62,6 +62,47 @@ public:
     }
 };
 
+template<typename T>
+bool issort(vector<T> arr, bool(*fun)(T, T)) {
+    try {
+        if (arr.size() == 0) throw 0;
+        if (arr.size() < 2) throw 1;
+        for (int i = 0;i < arr.size() - 1;i++) {
+            if (!fun(arr[i], arr[i + 1])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    catch (int errorcode) {
+        switch (errorcode) {
+        case 0: cout << "empty array"; break;
+        case 1: cout << "array less than 2"; break;
+        default: cout << "uknown exeption"; break;
+        }
+    }
+}
+template<typename T>
+bool issort(vector<T> arr) {
+    try {
+        if (arr.size() == 0) throw 0;
+        if (arr.size() < 2) throw 1;
+        for (int i = 0;i < arr.size() - 1;i++) {
+            if (arr[i] >arr[i + 1]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    catch (int errorcode) {
+        switch (errorcode) {
+        case 0: cout << "empty array"; break;
+        case 1: cout << "array less than 2"; break;
+        default: cout << "uknown exeption"; break;
+        }
+    }
+}
+
 
 template<typename T>
 void bubblesort(vector<T>& arr) {
@@ -96,9 +137,7 @@ void bubblesortopt(vector<T>& arr) {
         //cout << n;
     }
 }
-void nsort(vector<int> arr, int sizeofbucket,int maxvalue,int multofbucket=2) {
-    long long int avr = 0;
-	avr /= arr.size();
+void nsort(vector<int>& arr, int sizeofbucket,int maxvalue,int multofbucket=2) {
 	int amountofbuckets = arr.size() / sizeofbucket + 1;
 	vector<vector<int>> buckets(amountofbuckets);
 	for (int i = 0;i < buckets.size();i++){
@@ -108,21 +147,23 @@ void nsort(vector<int> arr, int sizeofbucket,int maxvalue,int multofbucket=2) {
     for(int a:arr){
         buckets[((a-1) / maxvalue) * amountofbuckets].push_back(a);
     }
-    
+    int i = 0;
     for (vector<int> a : buckets) {
+        a.shrink_to_fit();
         bubblesortopt(a);
-        
+        for (int b : a) {
+            arr[i++] = b;
+        }
     }
-    
 }
 
 int main()
 {
     vector<int> arr;
-    for (int i = 0;i < 10;i++) {
-        arr.push_back(rand());
+    for (int i = 0;i < 10000;i++) {
+        arr.push_back(rand()+rand()*pow(2,16));
     }
-    Timeget a;
+/*    Timeget a;
     auto arr1 = arr;
     bubblesort(arr1);
     a.printtime<microseconds>();
@@ -131,7 +172,13 @@ int main()
     Timeget b;
     auto arr2 = arr;
     bubblesortopt(arr2);
-    b.printtime<microseconds>();
+    b.printtime<microseconds>();*/
+
+    Timeget c;
+    auto arr3 = arr;
+    nsort(arr,100, 2147483647);
+    c.printtime<microseconds>();
+    cout << issort(arr);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
