@@ -4,6 +4,9 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
+#include <algorithm>
+#include <array>
+#include <functional>
 using namespace std;
 using namespace std::chrono;
 template<typename T>
@@ -137,20 +140,24 @@ void bubblesortopt(vector<T>& arr) {
         //cout << n;
     }
 }
-void nsort(vector<int>& arr, int sizeofbucket,int maxvalue,int multofbucket=2) {
-	int amountofbuckets = arr.size() / sizeofbucket + 1;
+void nsort(vector<int>& arr, int sizeofbucket,double maxvalue,int multofbucket=2) {
+	int amountofbuckets = ceil((double)arr.size() / (double)sizeofbucket);
 	vector<vector<int>> buckets(amountofbuckets);
 	for (int i = 0;i < buckets.size();i++){
-        vector<int> temp(sizeofbucket * multofbucket);
-		buckets[i]=temp;
+        //vector<int> temp;
+		buckets[i].reserve(sizeofbucket * multofbucket);
 	}
     for(int a:arr){
-        buckets[((a-1) / maxvalue) * amountofbuckets].push_back(a);
+        //cout << (a - 1.0) / maxvalue << endl;
+        //cout << (((a - 1.0) / maxvalue) * amountofbuckets) << endl;
+        buckets[floor(((a-1) / maxvalue) * amountofbuckets)].push_back(a);
     }
     int i = 0;
     for (vector<int> a : buckets) {
+		if (a.empty()) continue;
         a.shrink_to_fit();
         bubblesortopt(a);
+        //print(a);
         for (int b : a) {
             arr[i++] = b;
         }
@@ -160,9 +167,10 @@ void nsort(vector<int>& arr, int sizeofbucket,int maxvalue,int multofbucket=2) {
 int main()
 {
     vector<int> arr;
-    for (int i = 0;i < 10000;i++) {
+    for (int i = 0;i < 10000000;i++) {
         arr.push_back(rand()+rand()*pow(2,16));
     }
+    //print(arr);
 /*    Timeget a;
     auto arr1 = arr;
     bubblesort(arr1);
@@ -175,9 +183,9 @@ int main()
     b.printtime<microseconds>();*/
 
     Timeget c;
-    auto arr3 = arr;
-    nsort(arr,100, 2147483647);
-    c.printtime<microseconds>();
+    //auto arr3 = arr;
+    nsort(arr,100, pow(2, 31));
+    c.printtime<milliseconds>();
     cout << issort(arr);
 }
 
